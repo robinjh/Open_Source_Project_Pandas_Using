@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, recall_score, f1_score
 from sklearn.preprocessing import LabelEncoder
 
 # Load the dataset
@@ -110,16 +110,24 @@ y = bird_data['Damage'].apply(lambda x: 1 if x == 'Caused damage' else 0)
 # Split the data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train the model
-rf_model = RandomForestClassifier(random_state=42)
-rf_model.fit(X_train, y_train)
+# Train the KNN model
+knn_model = KNeighborsClassifier(n_neighbors=5)  # Adjust 'n_neighbors' as needed
+knn_model.fit(X_train, y_train)
 
 # Make predictions
-y_pred = rf_model.predict(X_test)
+y_pred = knn_model.predict(X_test)
 
 # Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
 print("Classification Report:")
 print(classification_report(y_test, y_pred))
+
+print(f"Accuracy: {accuracy:.2f}")
+print(f"Recall: {recall:.2f}")
+print(f"F1 Score: {f1:.2f}")
 
 # Confusion Matrix
 conf_matrix = confusion_matrix(y_test, y_pred)
